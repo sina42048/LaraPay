@@ -4,6 +4,7 @@ namespace Sina42048\LaraPay;
 
 use Sina42048\LaraPay\Exception\BillClassException;
 use Sina42048\LaraPay\Exception\DriverNotFoundException;
+use Sina42048\LaraPay\Abstract\Driver as AbstractDriver;
 
 /**
  * class LaraPay
@@ -29,6 +30,12 @@ class LaraPay {
      * @var \Sina42048\LaraPay\LaraBill $bill
      */
     private $bill;
+
+    /**
+     * driver name
+     * @var string $driverName
+     */
+    private $driverName;
 
 
     /**
@@ -62,8 +69,8 @@ class LaraPay {
     public function setDriver(string $driverName) {
         if ($this->isDriverExist($driverName)) {
             $this->createDriverInstance($driverName);
+            return $this;
         }
-        return $this;
     }
 
     /**
@@ -71,7 +78,12 @@ class LaraPay {
      */
     public function prepare(callable $func) {
         $this->driver->pay();
+
+        if (is_callable($func)) {
+            call_user_func($func, $this->bill->getTransactionId(), $this->driverName);
+        }
     }
+
 
     /**
      * check if given driver name exist in config array
@@ -80,10 +92,16 @@ class LaraPay {
      * @return bool
      */
     private function isDriverExist(string $driverName) {
-        if (array_key_exists($driverName, $this->config)) {
-            return true;
+        if (!array_key_exists($driverName, $this->config)) {
+            throw new DriverNotFoundException('driver not found');
         }
-        throw new DriverNotFoundException();
+
+        $reflection = new \ReflectionClass($this->config[$driverName]['class']);
+        if (!$reflection->isSubClassOf(AbstractDriver::class)) {
+            throw new DriverNotFoundException('selected driver should extend \Sina42048\LaraPay\Abstract\Driver class');
+        }
+
+        return true;
     }
 
     /**
