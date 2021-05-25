@@ -10,7 +10,7 @@ use Sina42048\LaraPay\Exception\PaymentRequestException;
 /**
  * class IdPay
  * @author Sina Fathollahi
- * @package Sina42048\LaraPay\Driver\IdPay
+ * @package Sina42048\LaraPay\Driver
  */
 class IdPay extends Driver{
 
