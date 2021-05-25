@@ -4,6 +4,7 @@ namespace Sina42048\LaraPay\Driver\IdPay;
 
 use Sina42048\LaraPay\Abstract\Driver;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\View;
 use Sina42048\LaraPay\Exception\PaymentRequestException;
 
 /**
@@ -33,7 +34,22 @@ class IdPay extends Driver{
         if ($response->status() > 201) {
             throw new PaymentRequestException($this->translateErrorMessages($response->status(), $response->json()['error_code']));
         }
-        
+        $this->data['id'] = $response->json()['id'];
+        $this->data['link'] = $response->json()['link'];
+
+        $this->bill->setTransactionId($response->json()['id']);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function render() {
+        return View::make('larapay::payment', [
+            'method' => 'POST',
+            'inputs' => $this->data,
+            'url' => $this->data['link'],
+        ]);
     }
 
     /**
