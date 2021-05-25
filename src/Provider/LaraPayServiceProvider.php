@@ -33,8 +33,12 @@ class LaraPayServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__.'/../views', 'larapay');
         $this->publishes([
             __DIR__. '/../../config/larapay.php' => config_path("larapay.php")
+        ]);
+        $this->publishes([
+            __DIR__.'/../views' => resource_path('views/vendor/larapay'),
         ]);
     }
 }
