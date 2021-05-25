@@ -30,6 +30,12 @@ abstract class Driver {
     protected $client;
 
     /**
+     * request payment retrived data
+     * @var array $data
+     */
+    protected $data;
+
+    /**
      * @param string $config specified driver config
      * @param \Sina42048\LaraPay\LaraBill $bill bill instance
      * @return void
@@ -43,6 +49,7 @@ abstract class Driver {
     /**
      * request payment to web service
      * @throws \Sina42048\LaraPay\Exception\PaymentRequestException
+     * @return self
      */
     public abstract function pay();
 
@@ -53,4 +60,10 @@ abstract class Driver {
      * @return string
      */
     protected abstract function translateErrorMessages($statusCode, $errorCode);
+
+    /**
+     * render payment view
+     * @return Illuminate\Support\Facades\View
+     */
+    public abstract function render();
 }
