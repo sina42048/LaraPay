@@ -74,7 +74,9 @@ class LaraPay {
     }
 
     /**
+     * prepare payment process
      * @param callback $func
+     * @return Sina42048\LaraPay\Abstract\Driver
      */
     public function prepare(callable $func) {
         $this->driver->pay();
@@ -82,6 +84,16 @@ class LaraPay {
         if (is_callable($func)) {
             call_user_func($func, $this->bill->getTransactionId(), $this->driverName);
         }
+    }
+
+    /**
+     * verify the payment
+     * @param callback $func
+     * @throws Sina42048\LaraPay\Exception\PaymentVerifyException
+     * @return void
+     */
+    public function verify(callable $func) {
+        $this->driver->verify($func);
     }
 
 
