@@ -16,6 +16,12 @@ class LaraRecipt {
     private $data;
 
     /**
+     * recipt amount
+     * @var int $amount
+     */
+    private $amount;
+
+    /**
      * payment transaction id
      * @var string $transaction_id
      */
@@ -78,6 +84,23 @@ class LaraRecipt {
      * @return int
      */
     public function getStatusCode() {
+        return $this->status_code;
+    }
+
+    /**
+     * set amount
+     * @param int $value
+     * @return void
+     */
+    public function amount($value) {
+        $this->amount = $value;
+    }
+
+    /**
+     * get amount
+     * @return int
+     */
+    public function getAmount() {
         return $this->status_code;
     }
 

@@ -60,7 +60,7 @@ class LaraBill {
      * @return string
      */
     public function getTransactionId() {
-        return $this->transactionId;
+        return $this->transaction_id;
     }
 
     /**

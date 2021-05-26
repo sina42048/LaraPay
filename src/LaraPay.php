@@ -32,13 +32,6 @@ class LaraPay {
     private $bill;
 
     /**
-     * driver name
-     * @var string $driverName
-     */
-    private $driverName;
-
-
-    /**
      * set the initial config array
      * @param array $config config array
      * @return void
@@ -79,11 +72,7 @@ class LaraPay {
      * @return Sina42048\LaraPay\Abstract\Driver
      */
     public function prepare(callable $func) {
-        $this->driver->pay();
-
-        if (is_callable($func)) {
-            call_user_func($func, $this->bill->getTransactionId(), $this->driverName);
-        }
+        return $this->driver->pay($func);
     }
 
     /**
@@ -125,7 +114,7 @@ class LaraPay {
         $className = $this->config[$driverName]['class'];
 
         if (class_exists($className)) {
-            $instance = new $className($this->config[$driverName], $this->bill);
+            $instance = new $className($driverName, $this->config[$driverName], $this->bill);
             $this->driver = $instance;
         }
     }
