@@ -5,7 +5,10 @@ namespace Sina42048\LaraPay\Driver\IdPay;
 use Sina42048\LaraPay\Abstract\Driver;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Request;
 use Sina42048\LaraPay\Exception\PaymentRequestException;
+use Sina42048\LaraPay\Exception\PaymentVerifyException;
+use Sina42048\LaraPay\LaraRecipt;
 
 /**
  * class IdPay
@@ -23,7 +26,7 @@ class IdPay extends Driver{
             'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
         ])->post($this->config['payment_request_url'], [
             'order_id' => $this->bill->order_id,
-            'amount' => $this->bill->amount,
+            'amount' => $this->bill->getAmount(),
             'name' => $this->bill->name,
             'phone' => $this->bill->phone,
             'mail' => $this->bill->mail,
@@ -50,6 +53,46 @@ class IdPay extends Driver{
             'inputs' => $this->data,
             'url' => $this->data['link'],
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function verify(callable $func) {
+        $response = Http::withHeaders([
+            'X-API-KEY' => $this->config['api_key'],
+            'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
+        ])->post($this->config['payment_verification_url'], [
+            'id' => Request::input('id'),
+            'order_id' => $Request::input('order_id'),
+        ]);
+
+        $recipt = $this->createRecipt($response->json());
+
+        if ($response->status() > 201) {
+            throw new PaymentVerifyException($this->translateErrorMessages($response->status(), $recipt->error_code));
+        }
+        
+        if ($response->status() == 200 && array_key_exists($recipt->getStatusCode())) {
+            throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
+        }
+        call_user_func($func, $recipt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createRecipt($reciptData) {
+        $recipt = new Recipt();
+        $recipt->setTransactionId($reciptData['id']);
+        $recipt->amount($reciptData['amount']);
+        $recipt->statusCode($reciptData['status']);
+        $recipt->track_id = $reciptData['track_id'];
+        $recipt->order_id = $reciptData['order_id'];
+        $recipt->card_no = $reciptData['card_no'];
+        $recipt->hashed_card_no = $reciptData['hashed_card_no'];
+        $recipt->date = $reciptData['date'];
+        return $recipt;
     }
 
     /**
@@ -97,6 +140,34 @@ class IdPay extends Driver{
             ]
         ];
         return $errors[$statusCode][$errorCode] ?? 'خطای ناشناخته رخ داده است';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function translateStatusCode($statusCode) {
+        $status = [
+            '1' => 'پرداخت انجام نشده است',
+            '2' => 'پرداخت ناموفق بوده است',
+            '3' => 'حطا رخ داده است',
+            '4' => 'بلوکه شده',
+            '5' => 'برگشت به پرداخت کننده',
+            '6' => 'برگشت خورده سیستمی',
+            '7' => 'انصراف از پرداخت',
+            '8' => 'به درگاه پرداخت منتقل شد',
+            '10' => 'در انتظار تایید پرداخت',
+            '100' => 'پرداخت تایید شده است',
+            '101' => 'پرداخت قبلا تایید شده است',
+            '200' => 'به دریافت کننده واریز شد'
+        ];
+        return $status[$statusCode] ?? 'خطای ناشناخته رخ داده است';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function failedPaymentStatusCodes() {
+        return [1, 2, 3, 4, 5, 6, 7, 8, 10, 101, 200];
     }
     
 }
