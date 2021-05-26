@@ -4,7 +4,7 @@ Iranian Payment Service
 # Example Usage For Payment Process
 ```php
 use Sina42048\LaraPay\LaraRecipt;
-use Sina42048\LaraPay\Exception\PaymentVerifyException;
+use Sina42048\LaraPay\Exception\PaymentRequestException;
 
 $bill = new LaraBill();
 $bill->amount(1000);
@@ -25,7 +25,7 @@ try {
 # Example Usage For Verify Process
 ```php
 use Sina42048\LaraPay\LaraBill;
-use Sina42048\LaraPay\Exception\PaymentRequestException;
+use Sina42048\LaraPay\Exception\PaymentVerifyException;
 
 try {
         LaraPay::setDriver('idpay')->verify(function(LaraRecipt $recipt) {
