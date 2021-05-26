@@ -20,7 +20,7 @@ class IdPay extends Driver{
     /**
      * {@inheritdoc}
      */
-    public function pay() {
+    public function pay(callable $func) {
         $response = Http::withHeaders([
             'X-API-KEY' => $this->config['api_key'],
             'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
@@ -41,6 +41,9 @@ class IdPay extends Driver{
         $this->data['link'] = $response->json()['link'];
 
         $this->bill->setTransactionId($response->json()['id']);
+        if (is_callable($func)) {
+            call_user_func($func, $this->bill->getTransactionId(), $this->driverName);
+        }
         return $this;
     }
 
@@ -64,7 +67,7 @@ class IdPay extends Driver{
             'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
         ])->post($this->config['payment_verification_url'], [
             'id' => Request::input('id'),
-            'order_id' => $Request::input('order_id'),
+            'order_id' => Request::input('order_id'),
         ]);
 
         $recipt = $this->createRecipt($response->json());
@@ -73,7 +76,7 @@ class IdPay extends Driver{
             throw new PaymentVerifyException($this->translateErrorMessages($response->status(), $recipt->error_code));
         }
         
-        if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes)) {
+        if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes())) {
             throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
         }
         call_user_func($func, $recipt);
@@ -83,7 +86,7 @@ class IdPay extends Driver{
      * {@inheritdoc}
      */
     protected function createRecipt($reciptData) {
-        $recipt = new Recipt();
+        $recipt = new LaraRecipt();
         $recipt->setTransactionId($reciptData['id']);
         $recipt->amount($reciptData['amount']);
         $recipt->statusCode($reciptData['status']);
