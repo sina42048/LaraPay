@@ -12,6 +12,12 @@ use \GuzzleHttp\Client;
 abstract class Driver {
 
     /**
+     * hold driver name
+     * @var string driver name
+     */
+    protected $driverName;
+    
+    /**
      * hold specified driver config
      * @var array $config 
      */
@@ -36,11 +42,13 @@ abstract class Driver {
     protected $data;
 
     /**
+     * @param string $driverName
      * @param string $config specified driver config
      * @param \Sina42048\LaraPay\LaraBill $bill bill instance
      * @return void
      */
-    public function __construct(array $config, \Sina42048\LaraPay\LaraBill $bill) {
+    public function __construct(string $driverName, array $config, \Sina42048\LaraPay\LaraBill $bill = null) {
+        $this->driverName = $driverName;
         $this->config = $config;
         $this->bill = $bill;
         $this->client = new Client();
@@ -48,10 +56,11 @@ abstract class Driver {
 
     /**
      * request payment to web service
+     * @param callback $func
      * @throws \Sina42048\LaraPay\Exception\PaymentRequestException
      * @return self
      */
-    public abstract function pay();
+    public abstract function pay(callable $func);
 
     /**
      * render payment view
