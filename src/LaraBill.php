@@ -22,6 +22,13 @@ class LaraBill {
     private $transaction_id;
 
     /**
+     * amount
+     * @var int $amount
+     */
+    private $amount;
+
+
+    /**
      * magic method to set bill data
      * @param string $key 
      * @param string $value
@@ -54,6 +61,23 @@ class LaraBill {
      */
     public function getTransactionId() {
         return $this->transactionId;
+    }
+
+    /**
+     * set amount
+     * @param int $value
+     * @return void 
+     */
+    public function amount($value) {
+        $this->amiunt = $value;
+    }
+    
+    /**
+     * retrive amount
+     * @return int
+     */
+    public function getAmount() {
+        return $this->amount;
     }
 
 }
