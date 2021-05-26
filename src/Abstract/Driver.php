@@ -54,6 +54,25 @@ abstract class Driver {
     public abstract function pay();
 
     /**
+     * render payment view
+     * @return Illuminate\Support\Facades\View
+     */
+    public abstract function render();
+
+    /**
+     * verify payment
+     * @param callback $func
+     */
+    public abstract function verify(callable $func);
+
+    /**
+     * create recipt data
+     * @param array $reciptData
+     * @return Sina42048\LaraPay\LaraRecipt
+     */
+    protected abstract function createRecipt($reciptData);
+
+    /**
      * translate messages that web service api retrive
      * @param int $statusCode error status code
      * @param int $errorCode error code
@@ -62,8 +81,15 @@ abstract class Driver {
     protected abstract function translateErrorMessages($statusCode, $errorCode);
 
     /**
-     * render payment view
-     * @return Illuminate\Support\Facades\View
+     * translate status codes that web service retrive
+     * @param int status_code
+     * @return string
      */
-    public abstract function render();
+    protected abstract function translateStatusCode($statusCode);
+
+    /**
+     * failed status codes that web service api can retrive after customer payment process
+     * @return array
+     */
+    protected abstract function failedPaymentStatusCodes();
 }
