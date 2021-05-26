@@ -73,7 +73,7 @@ class IdPay extends Driver{
             throw new PaymentVerifyException($this->translateErrorMessages($response->status(), $recipt->error_code));
         }
         
-        if ($response->status() == 200 && array_key_exists($recipt->getStatusCode())) {
+        if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes)) {
             throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
         }
         call_user_func($func, $recipt);
