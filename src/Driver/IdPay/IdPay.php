@@ -35,7 +35,7 @@ class IdPay extends Driver{
         ]);
 
         if ($response->status() > 201) {
-            throw new PaymentRequestException($this->translateErrorMessages($response->status(), $response->json()['error_code']));
+            throw new PaymentRequestException($this->translateErrorMessages($response->json()['error_code']));
         }
         $this->data['id'] = $response->json()['id'];
         $this->data['link'] = $response->json()['link'];
@@ -70,15 +70,15 @@ class IdPay extends Driver{
             'order_id' => Request::input('order_id'),
         ]);
 
-        $recipt = $this->createRecipt($response->json());
-
         if ($response->status() > 201) {
-            throw new PaymentVerifyException($this->translateErrorMessages($response->status(), $recipt->error_code));
+            throw new PaymentVerifyException($this->translateErrorMessages($response->json()['error_code']));
         }
         
+        $recipt = $this->createRecipt($response->json());
         if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes())) {
             throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
         }
+
         call_user_func($func, $recipt);
     }
 
@@ -101,48 +101,34 @@ class IdPay extends Driver{
     /**
      * {@inheritdoc}
      */
-    protected function translateErrorMessages($statusCode, $errorCode) {
-        $statusCode = (string) $statusCode;
-        $errorCode = (string) $errorCode;
+    protected function translateErrorMessages($errorCode) {
 
         $errors = [
-            '403' => [
-                '11' => 'کاربر مسدود شده است',
-                '12' => 'کلید API وارد شده صحیح نمی باشد',
-                '13' => 'IP معتبر نمی باشد',
-                '14' => 'وب سرویس در حال بررسی یا تایید نشده است',
-                '21' => 'حساب بانکی متصل به وب سرویس تایید نشده است',
-                '24' => 'حساب بانکی متصل به سرویس غیر فعال شده است',
-            ],
-            '404' => [
-                '22' => 'وب سرویس یافت نشد',
-            ],
-            '401' => [
-                '23' => 'اعتبار سنجی وب سرویس ناموفق بود'
-            ],
-            '406' => [
-                '31' => 'کد تراکنش id نباید خالی باشد',
-                '32' => 'شماره سفارش order_id نباید خالی باشد',
-                '33' => 'مبلغ amount نباید خالی باشد',
-                '34' => 'مبلع سفارش صحیح نمی باشد',
-                '35' => 'مبلغ سفارش صحیح نمی باشد',
-                '36' => 'مبلغ amount بیشتر از حد مجاز است',
-                '37' => 'آدرس بازگشت callback نمی تواند خالی باشد',
-                '38' => 'دامنه آدرس بازگشتی callback با آدرس دامین همخوانی ندارد',
-                '41' => 'فیلتر وضعیت تراکنش ها باید آرایاه ای از وضعیت های مجاز مستندات باشد',
-                '42' => 'فیلتر تاریخ پرداخت باید بصورت آرایه ای باشد',
-                '43' => 'فیلتر تاریخ تسویه باید بصورت آرایه ای باشد',
-            ],
-            '405' => [
-                '51' => 'تراکنش ایجاد نشد',
-                '53' => 'تایید پرداخت امکان پذیر نیست',
-                '54' => 'مدت زمان تایید پرداخت سپری شده است'
-            ],
-            '400' => [
-                '52' => 'استعلام نتیجه ای نداشت'
-            ]
+            '11' => 'کاربر مسدود شده است',
+            '12' => 'کلید API وارد شده صحیح نمی باشد',
+            '13' => 'IP معتبر نمی باشد',
+            '14' => 'وب سرویس در حال بررسی یا تایید نشده است',
+            '21' => 'حساب بانکی متصل به وب سرویس تایید نشده است',
+            '24' => 'حساب بانکی متصل به سرویس غیر فعال شده است',
+            '22' => 'وب سرویس یافت نشد',
+            '23' => 'اعتبار سنجی وب سرویس ناموفق بود',
+            '31' => 'کد تراکنش id نباید خالی باشد',
+            '32' => 'شماره سفارش order_id نباید خالی باشد',
+            '33' => 'مبلغ amount نباید خالی باشد',
+            '34' => 'مبلع سفارش صحیح نمی باشد',
+            '35' => 'مبلغ سفارش صحیح نمی باشد',
+            '36' => 'مبلغ amount بیشتر از حد مجاز است',
+            '37' => 'آدرس بازگشت callback نمی تواند خالی باشد',
+            '38' => 'دامنه آدرس بازگشتی callback با آدرس دامین همخوانی ندارد',
+            '41' => 'فیلتر وضعیت تراکنش ها باید آرایاه ای از وضعیت های مجاز مستندات باشد',
+            '42' => 'فیلتر تاریخ پرداخت باید بصورت آرایه ای باشد',
+            '43' => 'فیلتر تاریخ تسویه باید بصورت آرایه ای باشد',
+            '51' => 'تراکنش ایجاد نشد',
+            '53' => 'تایید پرداخت امکان پذیر نیست',
+            '54' => 'مدت زمان تایید پرداخت سپری شده است',
+            '52' => 'استعلام نتیجه ای نداشت'
         ];
-        return $errors[$statusCode][$errorCode] ?? 'خطای ناشناخته رخ داده است';
+        return $errors[$errorCode] ?? 'خطای ناشناخته رخ داده است';
     }
 
     /**
