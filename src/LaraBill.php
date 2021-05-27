@@ -69,7 +69,7 @@ class LaraBill {
      * @return void 
      */
     public function amount($value) {
-        $this->amiunt = $value;
+        $this->amount = $value;
     }
     
     /**
