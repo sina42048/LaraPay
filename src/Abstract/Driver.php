@@ -83,11 +83,10 @@ abstract class Driver {
 
     /**
      * translate messages that web service api retrive
-     * @param int $statusCode error status code
      * @param int $errorCode error code
      * @return string
      */
-    protected abstract function translateErrorMessages($statusCode, $errorCode);
+    protected abstract function translateErrorMessages($errorCode);
 
     /**
      * translate status codes that web service retrive
