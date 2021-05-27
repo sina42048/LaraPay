@@ -31,9 +31,13 @@ use Sina42048\LaraPay\Exception\PaymentVerifyException;
 
 Route::post('/verify', function() {
     try {
-        LaraPay::setDriver('idpay')->verify(function(LaraRecipt $recipt) {
-            //dd($recipt); // payment is verfied , now you must check recipt data with your database
-        });
+        LaraPay::setDriver('idpay')
+            ->checkAmount(function($transactionId) {
+                return $amount; // $amount should be return from your table in database based on transaction id
+            })
+            ->verify(function(LaraRecipt $recipt) {
+                dd($recipt); // payment is verfied , now you must check recipt data with your database
+            });
 
     } catch (PaymentVerifyException $e) {
         dd($e->getMessage());
