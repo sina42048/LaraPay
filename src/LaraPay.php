@@ -76,15 +76,14 @@ class LaraPay {
     }
 
     /**
-     * verify the payment
+     * check amount for verify process
      * @param callback $func
-     * @throws Sina42048\LaraPay\Exception\PaymentVerifyException
-     * @return void
+     * @return Sina42048\LaraPay\Abstract\Driver
      */
-    public function verify(callable $func) {
-        $this->driver->verify($func);
+    public function checkAmount(callable $func)
+    {
+        return $this->driver->checkAmount($func);
     }
-
 
     /**
      * check if given driver name exist in config array
