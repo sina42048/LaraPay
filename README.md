@@ -36,7 +36,7 @@ Route::post('/verify', function() {
                 return $amount; // $amount should be return from your table in database based on transaction id
             })
             ->verify(function(LaraRecipt $recipt) {
-                dd($recipt); // payment is verfied , now you must check recipt data with your database
+                dd($recipt); // payment is verfied and you access to additional recipt data
             });
 
     } catch (PaymentVerifyException $e) {
