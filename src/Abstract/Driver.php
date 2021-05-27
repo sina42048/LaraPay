@@ -55,6 +55,13 @@ abstract class Driver {
     }
 
     /**
+     * set amount from user own database by transaction id 
+     * @param callback $func
+     * @return self
+     */
+    public abstract function checkAmount(callable $func);
+
+    /**
      * request payment to web service
      * @param callback $func
      * @throws \Sina42048\LaraPay\Exception\PaymentRequestException
