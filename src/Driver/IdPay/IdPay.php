@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Request;
 use Sina42048\LaraPay\Exception\PaymentRequestException;
 use Sina42048\LaraPay\Exception\PaymentVerifyException;
 use Sina42048\LaraPay\LaraRecipt;
+use Sina42048\LaraPay\LaraBill;
 
 /**
  * class IdPay
@@ -56,6 +57,21 @@ class IdPay extends Driver{
             'inputs' => $this->data,
             'url' => $this->data['link'],
         ]);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function checkAmount(callable $func)
+    {
+        if (empty($this->bill)) {
+            if (is_callable($func)) {
+                $amount = $func(Request::input('id'));
+                $this->bill = new LaraBill();
+                $this->bill->amount($amount);
+            }
+        }
+        return $this;
     }
 
     /**
