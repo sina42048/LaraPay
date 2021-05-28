@@ -2,8 +2,8 @@
 Iranian payment gateways , all in one ! (still under development use at your own risk !)
 
 # Supported Drivers
-|Driver|stability|sandbox_stability|description
-| ------------ | ------------ |
+Driver | stability | sandbox_stability | description|
+|------------|------------|------------|------------|
 |idpay|✅|✅|-
 |parspal|✅|❌|this web service sand box has issue and doesnt work , however the sandbox functions is implemented, maybe in the future parspal fix this issue !
 |zarinpal|✅|✅|this driver sandbox doesnt work properly but we can simulate this with the help of api key in the parspal documentation
