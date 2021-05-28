@@ -145,7 +145,6 @@ class ZarinPal extends Driver{
      */
     protected function translateStatusCode($statusCode) {
         $status = [
-            '100' => 'پرداخت تایید شده است',
             '101' => 'پرداخت قبلا تایید شده است'
         ];
         return $status[$statusCode] ?? 'خطای ناشناخته رخ داده است';
