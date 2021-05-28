@@ -1,6 +1,9 @@
 # LaraPay
 Iranian payment gateways , all in one ! (still under development use at your own risk !)
 
+# Install
+    composer require sina42048/lara-pay
+
 # Supported Drivers
 Driver | stability | sandbox_stability | description|
 |------------|------------|------------|------------|

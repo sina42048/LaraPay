@@ -10,7 +10,10 @@
         "iranian",
         "pal",
         "bank",
-        "card"
+        "card",
+        "laravel",
+        "larapay",
+        "larapayment"
     ],
     "homepage": "https://github.com/sina42048/LaraPay",
     "authors": [
