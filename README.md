@@ -1,7 +1,16 @@
 # LaraPay
-Iranian Payment (Under Development)
+Iranian payment gateways , all in one ! (still under development use at your own risk !)
+
+# Supported Drivers
+|Driver|stability|sandbox_stability|description
+| ------------ | ------------ |
+|idpay|✅|✅|-
+|parspal|✅|❌|this web service sand box has issue and doesnt work , however the sandbox functions is implemented, maybe in the future parspal fix this issue !
+|zarinpal|✅|✅|this driver sandbox doesnt work properly but we can simulate this with the help of api key in the parspal documentation
+|zibal|✅|✅|-
 
 # Example Usage For Payment Process
+### For more information about required field for every driver please refer to that driver documentation page
 ```php
 use Sina42048\LaraPay\LaraRecipt;
 use Sina42048\LaraPay\Exception\PaymentRequestException;
@@ -45,3 +54,8 @@ Route::match(['GET', 'POST'], '/verify', function() {
     }
 });
 ```
+# Contributing
+pull request are welcome !
+
+# License
+MIT
