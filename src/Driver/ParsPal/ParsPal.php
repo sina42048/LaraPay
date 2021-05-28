@@ -103,8 +103,6 @@ class ParsPal extends Driver{
         $status = Request::input('status');
         $recipt_number = Request::input('recipt_number');
         $payment_id = Request::input('payment_id');
-        $reserve_id = Request::input('reserve_id');
-        $order_id = Request::input('order_id');
         return isset($status, $recipt_number, $payment_id, $reserve_id, $order_id);
     }
 
@@ -150,7 +148,6 @@ class ParsPal extends Driver{
      */
     protected function translateStatusCode($statusCode) {
         $status = [
-            '100' => 'پرداخت تایید شده است',
             '99' => 'انصراف کاربر از پرداخت',
             '88' => 'پرداخت ناموفق',
             '77' => 'لغو پرداخت توسط کاربر'
