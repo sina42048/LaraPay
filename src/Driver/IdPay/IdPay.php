@@ -7,7 +7,6 @@ use Sina42048\LaraPay\Exception\PaymentVerifyException;
 use Illuminate\Support\Facades\Request;
 use Sina42048\LaraPay\Abstract\Driver;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\View;
 use Sina42048\LaraPay\LaraRecipt;
 use Sina42048\LaraPay\LaraBill;
 
@@ -46,17 +45,6 @@ class IdPay extends Driver{
             call_user_func($func, $this->bill->getTransactionId(), $this->driverName);
         }
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function render() {
-        return View::make('larapay::payment', [
-            'method' => 'POST',
-            'inputs' => $this->data,
-            'url' => $this->data['link'],
-        ]);
     }
     
     /**
