@@ -35,6 +35,15 @@ return [
         'payment_sand_box_request_url' => 'https://sandbox.api.parspal.com/v1/payment/request',
         'payment_sand_box_verify_url' => ' https://sandbox.api.parspal.com/v1/payment/verify',
         'sand_box' => false
+    ],
+    'zibal' => [
+        'class' => \Sina42048\LaraPay\Driver\Zibal\Zibal::class,
+        'merchant' => 'xxxxx',
+        'callback_url' => 'http://localhost.dev',
+        'payment_start_url' => 'https://gateway.zibal.ir/start',
+        'payment_request_url' => 'https://gateway.zibal.ir/v1/request',
+        'payment_verify_url' => 'https://gateway.zibal.ir/v1/verify',
+        'sand_box' => false
     ]
 
 ];
