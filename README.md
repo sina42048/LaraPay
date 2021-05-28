@@ -29,14 +29,15 @@ Route::get('/payment', function () {
 use Sina42048\LaraPay\LaraBill;
 use Sina42048\LaraPay\Exception\PaymentVerifyException;
 
-Route::post('/verify', function() {
+
+Route::match(['GET', 'POST'], '/verify', function() {
     try {
         LaraPay::setDriver('idpay')
             ->checkAmount(function($transactionId) {
                 return $amount; // $amount should be return from your table in database based on transaction id
             })
             ->verify(function(LaraRecipt $recipt) {
-                dd($recipt); // payment is verfied and you have access to additional recipt data
+                dd($recipt); // payment is verfied , recipt data accessable
             });
 
     } catch (PaymentVerifyException $e) {
