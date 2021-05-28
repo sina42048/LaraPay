@@ -2,6 +2,7 @@
 
 namespace Sina42048\LaraPay\Abstract;
 
+use Illuminate\Support\Facades\View;
 use \GuzzleHttp\Client;
 
 /**
@@ -53,6 +54,18 @@ abstract class Driver {
         $this->bill = $bill;
         $this->client = new Client();
     }
+    
+    /**
+     * render payment view
+     * @return Illuminate\Support\Facades\View
+     */
+    public function render() {
+        return View::make('larapay::payment', [
+            'method' => 'POST',
+            'inputs' => $this->data,
+            'url' => $this->data['link'],
+        ]);
+    }
 
     /**
      * set amount from user own database by transaction id 
@@ -68,12 +81,6 @@ abstract class Driver {
      * @return self
      */
     public abstract function pay(callable $func);
-
-    /**
-     * render payment view
-     * @return Illuminate\Support\Facades\View
-     */
-    public abstract function render();
 
     /**
      * verify payment
