@@ -77,9 +77,17 @@ abstract class Driver {
 
     /**
      * verify payment
+     * @throws Sina42048\LaraPay\Exception\PaymentVerifyException
      * @param callback $func
+     * @return $func
      */
     public abstract function verify(callable $func);
+
+    /**
+     * determine which permissions should be passed to access the verify page
+     * @return bool
+     */
+    protected abstract function verifyAccessPermissions();
 
     /**
      * create recipt data
