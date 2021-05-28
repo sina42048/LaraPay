@@ -1,11 +1,23 @@
 {
     "name": "sina/lara-pay",
-    "description": "Iranian Payment Service",
+    "description": "Iranian Payment Gateways , All in one !",
+    "type": "library",
     "license": "MIT",
+    "keywords": [
+        "payment",
+        "gateway",
+        "iran",
+        "iranian",
+        "pal",
+        "bank",
+        "card"
+    ],
+    "homepage": "https://github.com/sina42048/LaraPay",
     "authors": [
         {
             "name": "Sina Fathollahi",
-            "email": "sinafat76@gmail.com"
+            "email": "sinafat76@gmail.com",
+            "role": "developer"
         }
     ],
     "require": {
@@ -26,5 +38,8 @@
                 "LaraPay": "Sina42048\\LaraPay\\Facade\\Lapay"
             }
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
