@@ -2,12 +2,12 @@
 
 namespace Sina42048\LaraPay\Driver\IdPay;
 
+use Sina42048\LaraPay\Exception\PaymentRequestException;
+use Sina42048\LaraPay\Exception\PaymentVerifyException;
+use Illuminate\Support\Facades\Request;
 use Sina42048\LaraPay\Abstract\Driver;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Request;
-use Sina42048\LaraPay\Exception\PaymentRequestException;
-use Sina42048\LaraPay\Exception\PaymentVerifyException;
 use Sina42048\LaraPay\LaraRecipt;
 use Sina42048\LaraPay\LaraBill;
 
@@ -28,10 +28,10 @@ class IdPay extends Driver{
         ])->post($this->config['payment_request_url'], [
             'order_id' => $this->bill->order_id,
             'amount' => $this->bill->getAmount(),
-            'name' => $this->bill->name,
-            'phone' => $this->bill->phone,
-            'mail' => $this->bill->mail,
-            'desc' => $this->bill->desc,
+            'name' => $this->bill->name ?? '',
+            'phone' => $this->bill->phone ?? '',
+            'mail' => $this->bill->mail ?? '',
+            'desc' => $this->bill->desc ?? '',
             'callback' => $this->config['callback_url']
         ]);
 
@@ -78,24 +78,37 @@ class IdPay extends Driver{
      * {@inheritdoc}
      */
     public function verify(callable $func) {
-        $response = Http::withHeaders([
-            'X-API-KEY' => $this->config['api_key'],
-            'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
-        ])->post($this->config['payment_verification_url'], [
-            'id' => Request::input('id'),
-            'order_id' => Request::input('order_id'),
-        ]);
+        if ($this->verifyAccessPermissions()) {
+            $response = Http::withHeaders([
+                'X-API-KEY' => $this->config['api_key'],
+                'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
+            ])->post($this->config['payment_verification_url'], [
+                'id' => Request::input('id'),
+                'order_id' => Request::input('order_id'),
+            ]);
 
-        if ($response->status() > 201) {
-            throw new PaymentVerifyException($this->translateErrorMessages($response->json()['error_code']));
-        }
-        
-        $recipt = $this->createRecipt($response->json());
-        if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes())) {
-            throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
-        }
+            if ($response->status() > 201) {
+                throw new PaymentVerifyException($this->translateErrorMessages($response->json()['error_code']));
+            }
+            
+            $recipt = $this->createRecipt($response->json());
+            if ($response->status() == 200 && in_array($recipt->getStatusCode(), $this->failedPaymentStatusCodes())) {
+                throw new PaymentVerifyException($this->translateStatusCode($recipt->getStatusCode()));
+            }
 
-        call_user_func($func, $recipt);
+            return call_user_func($func, $recipt);
+        }
+        throw new PaymentVerifyException("Bad Request");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function verifyAccessPermissions()
+    {
+        $id = Request::input('id');
+        $order_id = Request::input('order_id');
+        return isset($id, $order_id);
     }
 
     /**
