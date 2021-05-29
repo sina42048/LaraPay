@@ -44,6 +44,15 @@ return [
         'payment_request_url' => 'https://gateway.zibal.ir/v1/request',
         'payment_verify_url' => 'https://gateway.zibal.ir/v1/verify',
         'sand_box' => false
+    ],
+    'nextpay' => [
+        'class' => \Sina42048\LaraPay\Driver\NextPay\NextPay::class,
+        'api_key' => 'xxxxx',
+        'callback_url' => 'http://localhost.dev',
+        'payment_start_url' => 'https://nextpay.org/nx/gateway/payment',
+        'payment_request_url' => 'https://nextpay.org/nx/gateway/token',
+        'payment_verify_url' => 'https://nextpay.org/nx/gateway/verify',
+        'sand_box' => false
     ]
 
 ];
