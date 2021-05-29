@@ -1,9 +1,30 @@
 # LaraPay
-Iranian payment gateways , all in one ! (still under development use at your own risk !)
+Iranian payment gateways for laravel , all in one ! (still under development use at your own risk !)
 
 # Install
+    Step 1 :
     composer require sina42048/lara-pay
+    Step 2 :
+    php artisan vendor:publish
+    Step 3 :
+    configure your api key in the config/larapay.php
+------------------------------------------------------
+for laravel version 5.5 and below following step is required
 
+    In your config/app.php file add these two lines
+```php
+// In your providers array.
+'providers' => [
+    ...
+    Sina42048\LaraPay\Provider\LaraPayServiceProvider::class,
+],
+
+// In your aliases array.
+'aliases' => [
+    ...
+    'LaraPay' => Sina42048\LaraPay\Facade\Lapay::class,
+],
+```
 # Supported Drivers
 Driver | stability | sandbox_stability | description|
 |------------|------------|------------|------------|
@@ -15,7 +36,7 @@ Driver | stability | sandbox_stability | description|
 # Example Usage For Payment Process
 ### For more information about required field for every driver please refer to that driver documentation page
 ```php
-use Sina42048\LaraPay\LaraRecipt;
+use Sina42048\LaraPay\LaraBill;
 use Sina42048\LaraPay\Exception\PaymentRequestException;
 
 Route::get('/payment', function () {
@@ -38,7 +59,7 @@ Route::get('/payment', function () {
 
 # Example Usage For Verify Process
 ```php
-use Sina42048\LaraPay\LaraBill;
+use Sina42048\LaraPay\LaraRecipt;
 use Sina42048\LaraPay\Exception\PaymentVerifyException;
 
 
