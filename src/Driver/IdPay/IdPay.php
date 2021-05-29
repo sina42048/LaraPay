@@ -22,7 +22,7 @@ class IdPay extends Driver{
      */
     public function pay(callable $func) {
         $response = Http::withHeaders([
-            'X-API-KEY' => $this->config['api_key'],
+            'X-API-KEY' => $this->config['sand_box'] ? '6a7f99eb-7c20-4412-a972-6dfb7cd253a4' : $this->config['api_key'],
             'X-SANDBOX' => $this->config['sand_box'] ? 1 : 0
         ])->post($this->config['payment_request_url'], [
             'order_id' => $this->bill->order_id,
