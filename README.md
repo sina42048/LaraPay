@@ -1,5 +1,5 @@
 # LaraPay
-Iranian payment gateways for laravel , all in one ! (still under development use at your own risk !)
+Iranian payment gateways for laravel , all in one !
 
 # Install
     Step 1 :
@@ -32,6 +32,7 @@ Driver | stability | sandbox_stability | description|
 |parspal|✅|❌|this web service sand box has issue and doesnt work , however the sandbox functions is implemented, maybe in the future parspal fix this issue !
 |zarinpal|✅|✅|this driver sandbox doesnt work properly but we can simulate this with the help of api key in the parspal documentation
 |zibal|✅|✅|-
+|nextpay|✅|❌|this web service doesnt support sandbox feature
 
 # Example Usage For Payment Process
 ### For more information about required field for every driver please refer to that driver documentation page
@@ -67,7 +68,7 @@ Route::match(['GET', 'POST'], '/verify', function() {
     try {
         LaraPay::setDriver('idpay')
             ->checkAmount(function($transactionId) {
-                return $amount; // $amount should be return from your table in database based on transaction id
+                return $amount; // $amount should be return from your table in database based on transaction id, throw exception if amount not found
             })
             ->verify(function(LaraRecipt $recipt) {
                 dd($recipt); // payment is verfied , recipt data accessable
